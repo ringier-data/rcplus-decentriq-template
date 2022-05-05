@@ -10,6 +10,7 @@ class DecentriqDeployment:
                  self,
                  credentials_file,
                  python_computation_filename,
+                 data_clean_room_name,
                  schema1,
                  schema2
                 ):
@@ -18,6 +19,7 @@ class DecentriqDeployment:
         TODO: Fix hardcoded schemas
         """
         self.credentials_file = credentials_file
+        self.data_clean_room_name = data_clean_room_name
         self.python_computation_filename = python_computation_filename
 
     def deploy_workflow(self):
@@ -45,7 +47,7 @@ class DecentriqDeployment:
 
     def publish_data_clean_room(self):
         python_builder = dq.DataRoomBuilder(
-            "pythonDCR_03-05-2022",
+            self.data_clean_room_name,
             enclave_specs=self.specs
         )
 
