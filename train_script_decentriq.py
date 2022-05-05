@@ -21,7 +21,6 @@ def get_best_svm_model_DCR(data_party_a, data_party_b):
     x = combined_data.drop('y', axis=1)
     y = combined_data['y']
     return get_best_svm_model(x, y)
-    #return {'x': x, 'y':y}
 
 
 if __name__ == "__main__":
