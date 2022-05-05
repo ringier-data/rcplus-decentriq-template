@@ -10,8 +10,8 @@ class DecentriqDeployment:
                  credentials_file,
                  python_computation_filename,
                  data_clean_room_name,
-                 schema1,
-                 schema2
+                 schema1=None,
+                 schema2=None
                 ):
         """"
         TODO: Abstract for any number of schemas?
@@ -24,7 +24,7 @@ class DecentriqDeployment:
     def deploy_workflow(self):
         self.initialize_session(self.credentials_file)
         self.publish_data_clean_room()
-        self.uplodate_data()
+        self.upload_data()
         self.execute_computations()
 
     def initialize_session(self, credentials_file="credentials"):
@@ -120,7 +120,7 @@ class DecentriqDeployment:
         self.python_dcr_id = self.session.publish_data_room(self.data_room)
         print("DCR is successfully published. DCR ID:", self.python_dcr_id)
 
-    def uplodate_data_and_execute_computations(
+    def upload_data(
                                                self,
                                                data_a_filename="examples/breast_cancer/data/data_party_a.csv",
                                                data_b_filename="examples/breast_cancer/data/data_party_b.csv"

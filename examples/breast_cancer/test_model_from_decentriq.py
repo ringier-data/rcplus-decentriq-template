@@ -1,9 +1,23 @@
 import pickle
+import pandas as pd
 import sklearn
 import numpy as np
 
+from sklearn import datasets
 from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
-from starting_train_script.svm_grid_search_DCR_2 import get_data
+from sklearn.model_selection import train_test_split
+
+
+def get_data():
+    data = datasets.load_breast_cancer()
+    df = pd.DataFrame(data.data, columns=data.feature_names)
+    df['target'] = data.target
+    df.target = 1 - df.target
+    X = df.drop('target', axis=1)
+    y = df['target']
+    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y, random_state=4)
+    return  x_train, x_test, y_train, y_test
+
 
 with open("model_from_decentric_with_python_sdk.pkl", "rb") as file:
     model = pickle.load(file)
