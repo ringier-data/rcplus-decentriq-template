@@ -2,7 +2,9 @@ from setuptools import setup, find_packages
 
 
 requirements = [
-    "decentriq-platform==0.9.0rc1"
+    "decentriq-platform==0.9.0rc1",
+    "scikit-learn==1.0.2",
+    "pandas==1.3.5"
 ]
 
 
