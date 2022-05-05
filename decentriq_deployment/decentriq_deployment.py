@@ -1,4 +1,3 @@
-#import sys
 import decentriq_platform as dq
 import decentriq_platform.sql as dqsql
 import decentriq_platform.container as dqc
@@ -104,8 +103,9 @@ class DecentriqDeployment:
             email="alexandros.metsai@ringier.ch",
             authentication_method=self.client.platform.decentriq_pki_authentication,
             permissions=[
-                #dq.Permissions.leaf_crud("party_a"),
-                #dq.Permissions.leaf_crud("party_b"),  # NOTE: no permissions  needed for tabular datasets?
+                # NOTE: no permissions  needed for tabular datasets?
+                # dq.Permissions.leaf_crud("party_a"),
+                # dq.Permissions.leaf_crud("party_b"),
                 dq.Permissions.execute_compute("training_node"),
                 dq.Permissions.retrieve_published_datasets(),
                 dq.Permissions.update_data_room_status(),
@@ -131,13 +131,13 @@ class DecentriqDeployment:
         input_data = dqsql.read_input_csv_file(data_a_filename, has_header=True, delimiter=",")
 
         dataset_id_1 = dqsql.upload_and_publish_tabular_dataset(
-            input_data, 
+            input_data,
             key,
             self.python_dcr_id,
-            table = "party_a",
-            session = self.session,
-            description = "These are the data of party A",
-            validate = True
+            table="party_a",
+            session=self.session,
+            description="These are the data of party A",
+            validate=True
         )
 
         # Get dataset from postgres
@@ -149,13 +149,13 @@ class DecentriqDeployment:
         input_data = dqsql.read_input_csv_file(data_b_filename, has_header=True, delimiter=",")
 
         dataset_id_2 = dqsql.upload_and_publish_tabular_dataset(
-            input_data, 
+            input_data,
             key,
             self.python_dcr_id,
-            table = "party_b",
-            session = self.session,
-            description = "These are the data of party B",
-            validate = True
+            table="party_b",
+            session=self.session,
+            description="These are the data of party B",
+            validate=True
         )
 
         # Get dataset from postgres
