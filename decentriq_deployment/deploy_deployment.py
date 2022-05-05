@@ -1,4 +1,4 @@
-import sys
+#import sys
 import decentriq_platform as dq
 import decentriq_platform.sql as dqsql
 import decentriq_platform.container as dqc
@@ -6,13 +6,25 @@ from decentriq_platform.container.proto import MountPoint
 
 
 class DecentriqDeployment:
-    def __init__(self, credentials_file, schema1, schema2):
+    def __init__(
+                 self,
+                 credentials_file,
+                 python_computation_filename,
+                 schema1,
+                 schema2
+                ):
         """"
         TODO: Abstract for any number of schemas?
         TODO: Fix hardcoded schemas
         """
-        self.initialize_session(credentials_file)
+        self.credentials_file = credentials_file
+        self.python_computation_filename = python_computation_filename
+
+    def deploy_workflow(self):
+        self.initialize_session(self.credentials_file)
         self.publish_data_clean_room()
+        self.uplodate_data()
+        self.execute_computations()
 
     def initialize_session(self, credentials_file="credentials"):
         # Get credentials from file
@@ -37,7 +49,7 @@ class DecentriqDeployment:
             enclave_specs=self.specs
         )
 
-        # Create one data node for each party.
+        # Create a data node for each party.
         data_node_builder1 = dqsql.TabularDataNodeBuilder(
             "party_a",
             schema=[
@@ -66,8 +78,7 @@ class DecentriqDeployment:
         )
 
         # Create the python computation node.
-        python_script_filename = "train_script_decentriq.py"
-        with open(python_script_filename,"rb") as input_script:
+        with open(self.python_computation_filename, "rb") as input_script:
             my_script_content_from_file = input_script.read()
         script_node1 = dq.StaticContent("python_script", my_script_content_from_file)
         python_builder.add_compute_node(script_node1)
@@ -86,12 +97,13 @@ class DecentriqDeployment:
         )
         python_builder.add_compute_node(training_node)
 
+        # Add executtion and retrival permissions.
         python_builder.add_user_permission(
             email="alexandros.metsai@ringier.ch",
             authentication_method=self.client.platform.decentriq_pki_authentication,
             permissions=[
                 #dq.Permissions.leaf_crud("party_a"),
-                #dq.Permissions.leaf_crud("party_b"),  # no permissions for tabular datasets?
+                #dq.Permissions.leaf_crud("party_b"),  # NOTE: no permissions  needed for tabular datasets?
                 dq.Permissions.execute_compute("training_node"),
                 dq.Permissions.retrieve_published_datasets(),
                 dq.Permissions.update_data_room_status(),
@@ -102,6 +114,54 @@ class DecentriqDeployment:
         )
 
         # Publish Data Clean Room.
-        data_room = python_builder.build()
-        python_dcr_id = self.session.publish_data_room(data_room)
-        print("DCR is successfully published. DCR ID:", python_dcr_id)
+        self.data_room = python_builder.build()
+        self.python_dcr_id = self.session.publish_data_room(self.data_room)
+        print("DCR is successfully published. DCR ID:", self.python_dcr_id)
+
+    def uplodate_data_and_execute_computations(
+                                               self,
+                                               data_a_filename="examples/breast_cancer/data/data_party_a.csv",
+                                               data_b_filename="examples/breast_cancer/data/data_party_b.csv"
+                                              ):
+        # Party A
+        key = dq.Key()
+
+        input_data = dqsql.read_input_csv_file(data_a_filename, has_header=True, delimiter=",")
+
+        dataset_id_1 = dqsql.upload_and_publish_tabular_dataset(
+            input_data, 
+            key,
+            self.python_dcr_id,
+            table = "party_a",
+            session = self.session,
+            description = "These are the data of party A",
+            validate = True
+        )
+
+        # Get dataset from postgres
+        self.client.get_dataset(dataset_id_1)
+
+        # Party B
+        key = dq.Key()
+
+        input_data = dqsql.read_input_csv_file(data_b_filename, has_header=True, delimiter=",")
+
+        dataset_id_2 = dqsql.upload_and_publish_tabular_dataset(
+            input_data, 
+            key,
+            self.python_dcr_id,
+            table = "party_b",
+            session = self.session,
+            description = "These are the data of party B",
+            validate = True
+        )
+
+        # Get dataset from postgres
+        self.client.get_dataset(dataset_id_2)
+
+    def execute_computations(self, extraction_folder="."):
+        # Run computation and get results.
+        raw_result = self.session.run_computation_and_get_results(self.python_dcr_id, "training_node")
+        zip_result = dqc.read_result_as_zipfile(raw_result)
+        zip_result.extractall(extraction_folder)
+        zip_result.extractall(".")
