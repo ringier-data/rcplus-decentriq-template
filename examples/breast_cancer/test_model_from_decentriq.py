@@ -1,6 +1,5 @@
 import pickle
 import pandas as pd
-import sklearn
 import numpy as np
 
 from sklearn import datasets
@@ -16,10 +15,10 @@ def get_data():
     X = df.drop('target', axis=1)
     y = df['target']
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y, random_state=4)
-    return  x_train, x_test, y_train, y_test
+    return x_train, x_test, y_train, y_test
 
 
-with open("model_from_decentric_with_python_sdk.pkl", "rb") as file:
+with open("model.pkl", "rb") as file:  # TODO: add a parameterized model name
     model = pickle.load(file)
 
 x_train, x_test, y_train, y_test = get_data()

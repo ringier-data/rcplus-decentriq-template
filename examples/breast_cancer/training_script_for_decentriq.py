@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV
 
+
 def get_best_svm_model(x, y):
     parameters = {'kernel': ('linear', 'rbf'), 'C': [1, 10]}
     svc = svm.SVC()
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     try:
         data_party_a = pd.read_csv("/input/party_a/dataset.csv", skiprows=1,
                                    names=["id", "mean radius", "mean texture", "mean perimeter"])
-        data_party_b = pd.read_csv("/input/party_b/dataset.csv",skiprows=1,
+        data_party_b = pd.read_csv("/input/party_b/dataset.csv", skiprows=1,
                                    names=["id", "y"])
 
         data_party_a.set_index("id", inplace=True)
