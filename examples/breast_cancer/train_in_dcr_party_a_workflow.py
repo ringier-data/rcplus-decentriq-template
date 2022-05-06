@@ -44,6 +44,6 @@ if __name__ == "__main__":
         file.write(handler.python_dcr_id)
 
     # TODO: auto-check if party B has uploaded data or do the computation in another file (overkill for showcase?)
-    input("Press any key when party B data are uploaded")
+    input("Press ENTER when party B data are uploaded.")
 
-    handler.execute_computations()
+    handler.execute_computations(extraction_folder="examples/breast_cancer")
