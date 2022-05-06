@@ -22,9 +22,11 @@ class DecentriqDeployment:
         self.python_computation_filename = python_computation_filename
 
     def deploy_workflow(self):
+        """Handle all stages from the parent for testing purposes."""
         self.initialize_session(self.credentials_file)
         self.publish_data_clean_room()
-        self.upload_data()
+        self.upload_data(data_name="party_a", data_filename="examples/breast_cancer/data/data_party_a.csv")
+        self.upload_data(data_name="party_b", data_filename="examples/breast_cancer/data/data_party_b.csv")
         self.execute_computations()
 
     def initialize_session(self, credentials_file="credentials"):
@@ -120,46 +122,23 @@ class DecentriqDeployment:
         self.python_dcr_id = self.session.publish_data_room(self.data_room)
         print("DCR is successfully published. DCR ID:", self.python_dcr_id)
 
-    def upload_data(
-                    self,
-                    data_a_filename="examples/breast_cancer/data/data_party_a.csv",
-                    data_b_filename="examples/breast_cancer/data/data_party_b.csv"
-                   ):
-        # Party A
+    def upload_data(self, data_name, data_filename):
         key = dq.Key()
 
-        input_data = dqsql.read_input_csv_file(data_a_filename, has_header=True, delimiter=",")
+        input_data = dqsql.read_input_csv_file(data_filename, has_header=True, delimiter=",")
 
-        dataset_id_1 = dqsql.upload_and_publish_tabular_dataset(
+        dataset_id = dqsql.upload_and_publish_tabular_dataset(
             input_data,
             key,
             self.python_dcr_id,
-            table="party_a",
+            table=data_name,
             session=self.session,
-            description="These are the data of party A",
+            description=f"These are the {data_name} data",
             validate=True
         )
 
         # Get dataset from postgres
-        self.client.get_dataset(dataset_id_1)
-
-        # Party B
-        key = dq.Key()
-
-        input_data = dqsql.read_input_csv_file(data_b_filename, has_header=True, delimiter=",")
-
-        dataset_id_2 = dqsql.upload_and_publish_tabular_dataset(
-            input_data,
-            key,
-            self.python_dcr_id,
-            table="party_b",
-            session=self.session,
-            description="These are the data of party B",
-            validate=True
-        )
-
-        # Get dataset from postgres
-        self.client.get_dataset(dataset_id_2)
+        self.client.get_dataset(dataset_id)
 
     def execute_computations(self, extraction_folder="."):
         # Run computation and get results.
