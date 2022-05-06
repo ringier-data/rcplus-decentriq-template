@@ -9,7 +9,14 @@ def get_best_svm_model(x, y):
     parameters = {'kernel': ('linear', 'rbf'), 'C': [1, 10]}
     svc = svm.SVC()
     clf = GridSearchCV(svc, parameters)
-    clf.fit(x, y)
+    try:
+        clf.fit(x, y)
+    except ValueError as err:
+        # Handle expected error during Decentriq computational tests.
+        if str(err) == "Found array with 0 sample(s) (shape=(0,)) while a minimum of 1 is required.":
+            print('validation passed')
+        else:
+            raise Exception(err)
     return clf.best_estimator_
 
 
@@ -30,24 +37,18 @@ if __name__ == "__main__":
                                    names=["id", "mean radius", "mean texture", "mean perimeter"])
         data_party_b = pd.read_csv("/input/party_b/dataset.csv", skiprows=1,
                                    names=["id", "y"])
-
-        data_party_a.set_index("id", inplace=True)
-        data_party_b.set_index("id", inplace=True)
-
-        model = get_best_svm_model_DCR(data_party_a, data_party_b)
-
-        # Write to output file.
-        with open('/output/model.pkl', 'wb') as file:
-            pickle.dump(model, file)
-
-    # Handle expected errors
     except pd.errors.EmptyDataError as err:
+        # Handle expected error during Decentriq computational tests.
         if str(err) == 'No columns to parse from file':
             print('validation passed')
         else:
             raise Exception(err)
-    except ValueError as err:
-        if str(err) == "Found array with 0 sample(s) (shape=(0,)) while a minimum of 1 is required.":
-            print('validation passed')
-        else:
-            raise Exception(err)
+
+    data_party_a.set_index("id", inplace=True)
+    data_party_b.set_index("id", inplace=True)
+
+    model = get_best_svm_model_DCR(data_party_a, data_party_b)
+
+    # Write to output file.
+    with open('/output/model.pkl', 'wb') as file:
+        pickle.dump(model, file)
