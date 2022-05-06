@@ -18,23 +18,23 @@ def get_data():
     return x_train, x_test, y_train, y_test
 
 
-with open("model.pkl", "rb") as file:  # TODO: add a parameterized model name
-    model = pickle.load(file)
+def print_metrics(preds, y):
+    acc = accuracy_score(preds, y)
+    auc = roc_auc_score(preds, y)
+    f1 = f1_score(preds, y)
+    print(f"Accuracy score on the test set: {acc}")
+    print(f"AUC on the test set: {auc}")
+    print(f"F1-Score on the test set: {f1}")
 
-x_train, x_test, y_train, y_test = get_data()
 
-preds = model.predict(x_test[['mean radius', 'mean texture', 'mean perimeter']])
-acc = accuracy_score(preds, y_test)
-auc = roc_auc_score(preds, y_test)
-f1 = f1_score(preds, y_test)
-print(f"Accuracy score on the test set: {acc}")
-print(f"AUC on the test set: {auc}")
-print(f"F1-Score on the test set: {f1}")
+if __name__ == "__main__":
+    with open("model.pkl", "rb") as file:  # TODO: add a parameterized model name
+        model = pickle.load(file)
 
-rnd_pred = np.random.randint(0, 2, len(y_test))
-acc_rnd = accuracy_score(preds, rnd_pred)
-auc_rnd = roc_auc_score(preds, rnd_pred)
-f1_score_rnd = f1_score(preds, rnd_pred)
-print(f"Random Accuracy score on the test set: {acc_rnd}")
-print(f"Random AUC on the test set: {auc_rnd}")
-print(f"Random F1-Score on the test set: {f1_score_rnd}")
+    x_train, x_test, y_train, y_test = get_data()
+
+    preds = model.predict(x_test[['mean radius', 'mean texture', 'mean perimeter']])
+    print_metrics(preds, y_test)
+
+    rnd_pred = np.random.randint(0, 2, len(y_test))
+    print_metrics(rnd_pred, y_test)

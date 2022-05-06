@@ -15,7 +15,7 @@ class DecentriqDeployment:
                 ):
         """"
         TODO: Abstract for any number of schemas?
-        TODO: Fix hardcoded schemas
+        TODO: Deprecate hardcoded schemas.
         """
         self.credentials_file = credentials_file
         self.data_clean_room_name = data_clean_room_name
@@ -121,10 +121,10 @@ class DecentriqDeployment:
         print("DCR is successfully published. DCR ID:", self.python_dcr_id)
 
     def upload_data(
-                                               self,
-                                               data_a_filename="examples/breast_cancer/data/data_party_a.csv",
-                                               data_b_filename="examples/breast_cancer/data/data_party_b.csv"
-                                              ):
+                    self,
+                    data_a_filename="examples/breast_cancer/data/data_party_a.csv",
+                    data_b_filename="examples/breast_cancer/data/data_party_b.csv"
+                   ):
         # Party A
         key = dq.Key()
 
