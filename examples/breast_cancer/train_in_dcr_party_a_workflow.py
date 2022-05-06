@@ -1,6 +1,36 @@
 import datetime
 
-from decentriq_deployment.decentriq_deployment import PartyA
+from decentriq_deployment.decentriq_deployment import DecentriqDeployment
+
+
+class PartyA(DecentriqDeployment):
+    """
+    Party A will be responsible for publishing the DCR, defining the python computation and
+    uploading the dataset features.
+    """
+    def __init__(
+                 self,
+                 credentials_file,
+                 python_computation_filename,
+                 data_clean_room_name,
+                 schema1=None,
+                 schema2=None
+                ):
+        super().__init__(
+                         credentials_file,
+                         python_computation_filename,
+                         data_clean_room_name,
+                         schema1,
+                         schema2
+                        )
+
+    def party_a_requisitions(self, data_name, data_filename):
+        self.initialize_session(self.credentials_file)
+        self.publish_data_clean_room()
+        self.upload_data(data_name, data_filename)
+
+    def execute_computations(self, extraction_folder="."):
+        return super().execute_computations(extraction_folder)
 
 
 if __name__ == "__main__":

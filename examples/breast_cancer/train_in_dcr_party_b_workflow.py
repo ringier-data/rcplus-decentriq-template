@@ -1,6 +1,32 @@
 import os
 
-from decentriq_deployment.decentriq_deployment import PartyB
+from decentriq_deployment.decentriq_deployment import DecentriqDeployment
+
+
+class PartyB(DecentriqDeployment):
+    """
+    Party B will be responsible only for uploading the dataset labels.
+    """
+    def __init__(
+                 self,
+                 credentials_file,
+                 python_computation_filename,
+                 data_clean_room_name,
+                 schema1=None,
+                 schema2=None
+                ):
+        super().__init__(
+                         credentials_file,
+                         python_computation_filename,
+                         data_clean_room_name,
+                         schema1,
+                         schema2
+                        )
+
+    def party_b_requisitions(self, data_name, data_filename, dcr_id):
+        self.python_dcr_id = dcr_id
+        self.initialize_session(self.credentials_file)
+        self.upload_data(data_name, data_filename)
 
 
 if __name__ == "__main__":
