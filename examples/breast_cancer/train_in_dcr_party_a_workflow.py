@@ -29,9 +29,6 @@ class PartyA(DecentriqDeployment):
         self.publish_data_clean_room()
         self.upload_data(data_name, data_filename)
 
-    def execute_computations(self, extraction_folder="."):
-        return super().execute_computations(extraction_folder)
-
 
 if __name__ == "__main__":
     python_computation_filename = "examples/breast_cancer/training_script_for_decentriq.py"
