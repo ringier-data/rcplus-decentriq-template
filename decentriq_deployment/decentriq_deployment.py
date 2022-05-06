@@ -77,7 +77,7 @@ class DecentriqDeployment:
         data_node_builder2.add_to_builder(
             python_builder,
             authentication=self.client.platform.decentriq_pki_authentication,
-            users=[self.user_email]
+            users=[self.user_email]  # TODO: this is the place to add permissions for Party B user
         )
 
         # Create the python computation node.
@@ -105,7 +105,8 @@ class DecentriqDeployment:
             email="alexandros.metsai@ringier.ch",
             authentication_method=self.client.platform.decentriq_pki_authentication,
             permissions=[
-                # NOTE: no permissions  needed for tabular datasets?
+                # NOTE: Q: no permissions  needed for tabular datasets?
+                #       A: They are added from "add_to_builder", though that's a bit inconcise afaik.
                 # dq.Permissions.leaf_crud("party_a"),
                 # dq.Permissions.leaf_crud("party_b"),
                 dq.Permissions.execute_compute("training_node"),
