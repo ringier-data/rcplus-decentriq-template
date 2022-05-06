@@ -1,8 +1,11 @@
 """
+NOTE: Was used to get the party A and party B data, but other that that this is an obsolete file.
+      To be deleted.
+
 DCR Scenario 1:
     We assume that our data comes from two parties, Party_A and Party_B.
     No party has access to the other's data, but a common identifier exists.
-    We train and test using all features.
+    We train an SVM using Grid Search and test using all features.
 """
 
 import pandas as pd
@@ -20,7 +23,7 @@ def get_data():
     X = df.drop('target', axis=1)
     y = df['target']
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y, random_state=4)
-    return  x_train, x_test, y_train, y_test
+    return x_train, x_test, y_train, y_test
 
 
 def get_best_svm_model(x, y):
