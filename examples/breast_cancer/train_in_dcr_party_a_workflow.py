@@ -46,7 +46,7 @@ if __name__ == "__main__":
     with open("tmp_dcr_id", "w") as file:
         file.write(handler.python_dcr_id)
 
-    # TODO: auto-check if party B has uploaded data or reload hanlder in another file (overkill for showcase?)
+    # TODO: auto-check if party B has uploaded data or do the computation in another file (overkill for showcase?)
     input("Press any key when party B data are uploaded")
 
     handler.execute_computations()

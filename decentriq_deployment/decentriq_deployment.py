@@ -14,15 +14,18 @@ class DecentriqDeployment:
                  schema2=None
                 ):
         """"
-        TODO: Abstract for any number of schemas?
         TODO: Deprecate hardcoded schemas.
+        TODO: Abstract for any number of schemas?
         """
         self.credentials_file = credentials_file
         self.data_clean_room_name = data_clean_room_name
         self.python_computation_filename = python_computation_filename
 
     def deploy_workflow(self):
-        """Handle all stages from the parent for testing purposes. TODO: remove in future"""
+        """
+        Handle all stages from the parent for testing purposes.
+        TODO: Not meanted to be run by the class' children; remove in future.
+        """
         self.initialize_session(self.credentials_file)
         self.publish_data_clean_room()
         self.upload_data(data_name="party_a", data_filename="examples/breast_cancer/data/data_party_a.csv")
@@ -47,6 +50,10 @@ class DecentriqDeployment:
         self.session = self.client.create_session(self.auth, self.specs)
 
     def publish_data_clean_room(self):
+        """
+        NOTE: With Tabular data (which for now are our only choice), we need to know the columns 
+              for all parties at DCR publish time. For the types, we can assume FLOAT64.
+        """
         python_builder = dq.DataRoomBuilder(
             self.data_clean_room_name,
             enclave_specs=self.specs
@@ -106,7 +113,8 @@ class DecentriqDeployment:
             authentication_method=self.client.platform.decentriq_pki_authentication,
             permissions=[
                 # NOTE: Q: no permissions  needed for tabular datasets?
-                #       A: They are added from "add_to_builder", though that's a bit inconcise afaik.
+                #       A: They are added from "add_to_builder", though that seems a bit inconcise imo.
+                #          Maybe it has something to do with the implementation details.
                 # dq.Permissions.leaf_crud("party_a"),
                 # dq.Permissions.leaf_crud("party_b"),
                 dq.Permissions.execute_compute("training_node"),
@@ -124,6 +132,7 @@ class DecentriqDeployment:
         print("DCR is successfully published. DCR ID:", self.python_dcr_id)
 
     def upload_data(self, data_name, data_filename):
+        """"Upload the data for a single dataset."""
         key = dq.Key()
 
         input_data = dqsql.read_input_csv_file(data_filename, has_header=True, delimiter=",")
@@ -142,7 +151,7 @@ class DecentriqDeployment:
         self.client.get_dataset(dataset_id)
 
     def execute_computations(self, extraction_folder="."):
-        # Run computation and get results.
+        """Run computation and get results."""
         raw_result = self.session.run_computation_and_get_results(self.python_dcr_id, "training_node")
         zip_result = dqc.read_result_as_zipfile(raw_result)
         zip_result.extractall(extraction_folder)
