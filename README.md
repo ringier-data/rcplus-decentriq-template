@@ -39,3 +39,5 @@ A: Decentriq might be able to provide as with a debug VM (with limited security 
 
 Q: Use different credentials\
 A: found how-to; todo: implement
+
+Issue: Decentriq is facing issues with loading abstract files (instread of tabular data) in the DCRs. Specifically, it is only possible to use one (and only one) file that is unstructured. Using more than one is for the moment disabled, as some edge cases were found that are not easy to control in confidential computing yet. Decentriq is currently enabling them. Decentriq suggests that reasons to use the tables rather than files when possible is that they are much easier to control, there is data validation in place for them and are optimized in the read-write process.
