@@ -1,4 +1,4 @@
-### Questions and open issues
+## Questions and open issues
 Q: How are packages installed in decentriq? Do we have restrictions regarding sklearn version, etc.? \
 A: We can't install anything. Decentriq data clean rooms contain some pre-installed libraries.
 
@@ -23,7 +23,10 @@ TODO: update
 - Scenario 2: Party_A provides features, Party_B provides only labels. We match features to labels using a common unique identifier. The model is trained with features from party_A. Party_A gets the model and evaluates its performance with the test set that contains the subset of features.
 - Scenario 3: Party_A provides the model and Party_B the features and labels. Party_A gets only the model. Can we provide predictions without knowing anything about Party_B's features? (or at least knowing only a mean?) If we use a mean for the missing features in the test set, the (working/not-working) results become heavily dataset-specific.
 
-### Update: Runned a script in a DCR web API, TODO: fill details
-
-
-### Update: Runned a script in a DCR Python API, TODO: fill details
+## Examples
+###breast_cancer example
+- implements scenario 2
+- PartyA and PartyB classes inherit from DecentriqDeployment
+- PartyA defines and publishes the DCR, uploads data (features) and waits for PartyB to upload its data
+- PartyB uploads data (labels)
+- PartyA executes the computation and get the trained model
