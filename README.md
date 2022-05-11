@@ -8,8 +8,7 @@ The scope is the quick setup and publishing of Data Clean Rooms (DCRs), the data
 
 - Scenario 1: Party_A provides features, Party_B provides features and labels. Data from both parties contain a shared unique identifier. The model is trained with features from both parties. Party_A gets the model and evaluates its performance with the test set that contains all features.
 - Scenario 2: Party_A provides features and Party_B provides only labels. We match features to labels using a shared unique identifier and train the model.
-- Scenario 3: Party_A provides the model/training code and Party_B the features and labels. Party_A gets only the model. Can we provide predictions without knowing anything about Party_B's features? (or at least knowing only a mean?) If we use a mean for the missing features in the test set, the (working/not-working) results become heavily dataset-specific.
-- Scenario 4: Party A tries to predict party B's features. Can be broken down be a subset of scenario 2.
+- Scenario 3: Party A tries to predict party B's features. Can be broken down be a subset of scenario 2.
 
 ## Examples
 ### Train on breast cancer scikit-learn dataset
