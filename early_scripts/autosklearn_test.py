@@ -34,7 +34,7 @@ def test_auto_sklearn():
 
     # Fit with auto-sklearn.
     start = time.time()
-    automl = autosklearn.classification.AutoSklearnClassifier(n_jobs=8, memory_limit=10000)
+    automl = autosklearn.classification.AutoSklearnClassifier(n_jobs=8, memory_limit=7000)
     automl.fit(X_train, y_train)
 
     # Predict
