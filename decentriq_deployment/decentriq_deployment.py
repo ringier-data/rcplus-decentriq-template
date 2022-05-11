@@ -51,7 +51,7 @@ class DecentriqDeployment:
 
     def publish_data_clean_room(self):
         """
-        NOTE: With Tabular data (which for now are our only choice), we need to know the columns 
+        NOTE: With Tabular data (which for now are our only choice), we need to know the columns
               for all parties at DCR publish time. For the types, we can assume FLOAT64.
         """
         python_builder = dq.DataRoomBuilder(
