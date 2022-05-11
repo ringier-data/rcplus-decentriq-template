@@ -16,10 +16,10 @@ The scope is the quick setup and publishing of Data Clean Rooms (DCRs), the data
 - PartyA and PartyB classes inherit from DecentriqDeployment
 - PartyA defines and publishes the DCR, uploads data (features) and waits for PartyB to upload its data
 - PartyB uploads data (labels)
-- PartyA executes the computation and get the trained model
+- PartyA executes the computation and gets the trained model
 
 To execute:
-1. run `train_in_dcr_party_a_workflow.py` and leave the script running without pressing `enter`
+1. run `train_in_dcr_party_a_workflow.py` and leave the script running
 1. run `train_in_dcr_party_b_workflow.py`
 1. press `enter` in the first script
 
