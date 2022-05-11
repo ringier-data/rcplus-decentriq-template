@@ -9,6 +9,6 @@ lint:
 	${PYTHON} -m pip install -U flake8
 	${PYTHON} -m flake8 examples decentriq_deployment
 
-.PHONY: install
-install:
-	PYTHONPATH=${PYTHON_PROJECT_ROOT} ${PIP} install .
+.PHONY: install-dev
+install-dev:
+	PYTHONPATH=${PYTHON_PROJECT_ROOT} ${PIP} install -e .
