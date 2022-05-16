@@ -37,13 +37,10 @@ if __name__ == "__main__":
                      python_computation_filename=python_computation_filename,
                      data_clean_room_name=f"ExampleBreastCancer_{datetime.date.today()}"
                     )
+
+    # Upload data
     handler.party_a_requisitions(data_name="party_a", data_filename="examples/breast_cancer/data/data_party_a.csv")
 
-    # Save DCR ID to temp file for Party B to load from.
+    # Save DCR ID to a temp file for Party B to load from (and also to load when executing computations).
     with open("tmp_dcr_id", "w") as file:
         file.write(handler.python_dcr_id)
-
-    # TODO: auto-check if party B has uploaded data or do the computation in another file (overkill for showcase?)
-    input("Press ENTER when party B data are uploaded.")
-
-    handler.execute_computations(extraction_folder="examples/breast_cancer")
