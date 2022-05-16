@@ -1,5 +1,3 @@
-import os
-
 from decentriq_deployment.decentriq_deployment import DecentriqDeployment
 
 
@@ -37,12 +35,12 @@ if __name__ == "__main__":
                      data_clean_room_name=None
                     )
 
-    # Read and remove DCR ID temp file.
+    # Read DCR ID temp file.
     with open("tmp_dcr_id", "r") as file:
         dcr_id = file.read().rstrip()
 
+    # Upload Party B data
     handler.party_b_requisitions(data_name="party_b",
                                  data_filename="examples/breast_cancer/data/data_party_b.csv",
                                  dcr_id=dcr_id
                                  )
-    os.remove("tmp_dcr_id")
