@@ -26,8 +26,6 @@ To execute:
 
 Credentials (email and API token) must be stored in `credentials` file in repo root.
 
-TODO: We can avoid the above quick-and-dirty process by creating a third script decicated to execution of the computation (if not deemed overkill).
-
 
 ## Questions and open issues
 **Q:** How are packages installed in decentriq? Do we have restrictions regarding sklearn version, etc.? \
