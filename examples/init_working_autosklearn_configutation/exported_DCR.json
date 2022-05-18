@@ -1,0 +1,136 @@
+{
+  "computationOrder": [
+    "autosk"
+  ],
+  "computeNodes": [
+    {
+      "computeNodeType": "BRANCH",
+      "config": {
+        "config": {
+          "computation": {
+            "pythonInputs": [
+              "party_a",
+              "party_b"
+            ],
+            "pythonOutput": "/output",
+            "pythonScript": "import pickle\nimport pandas as pd\nimport os\nimport autosklearn.classification\n\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score, roc_auc_score\n\n\ndef get_best_model(x, y):\n    automl = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=30, n_jobs=8, memory_limit=8000)  #reduced time\n    try:\n        automl.fit(x, y)\n    except ValueError as err:\n        # Handle expected error during Decentriq computational tests.\n        if str(err) == \"Found array with 0 sample(s) (shape=(0, 1)) while a minimum of 1 is required.\":\n            print('validation passed')\n        else:\n            print(str(err))\n            os._exit(1)\n    return automl\n\n\ndef get_best_model_DCR(data_party_a, data_party_b):\n    \"\"\"\n    Using the index, combine the data and get the best SVM model.\n    For now getting the inner join of the two sets seems to be enough.\n    \"\"\"\n    combined_data = pd.merge(data_party_a, data_party_b, left_index=True, right_index=True)\n    x = combined_data.drop('y', axis=1)\n    y = combined_data['y']\n    return get_best_model(x, y)\n\n\nif __name__ == \"__main__\":\n    try:\n        data_party_a = pd.read_csv(\"/input/party_a/dataset.csv\", skiprows=1,\n                                   names=[\"id\", \"mean radius\", \"mean texture\", \"mean perimeter\"])\n        data_party_b = pd.read_csv(\"/input/party_b/dataset.csv\", skiprows=1,\n                                   names=[\"id\", \"y\"])\n    except pd.errors.EmptyDataError as err:\n        # Handle expected error during Decentriq computational tests.\n        if str(err) == 'No columns to parse from file':\n            print('validation passed')\n        else:\n            raise Exception(err)\n\n    data_party_a.set_index(\"id\", inplace=True)\n    data_party_b.set_index(\"id\", inplace=True)\n\n    model = get_best_model_DCR(data_party_a, data_party_b)\n\n    # Write to output file.\n    with open('/output/model.pkl', 'wb') as file:\n        pickle.dump(model, file)\n\n    os._exit(0)",
+            "pythonContents": []
+          },
+          "computationType": "python"
+        }
+      },
+      "index": 0,
+      "nodeName": "autosk"
+    },
+    {
+      "computeNodeType": "BRANCH",
+      "config": {
+        "config": {
+          "validation": {
+            "tableSchema": {
+              "namedColumns": [
+                {
+                  "name": "id",
+                  "columnType": {
+                    "nullable": false,
+                    "primitiveType": 0
+                  }
+                },
+                {
+                  "name": "mean radius",
+                  "columnType": {
+                    "nullable": false,
+                    "primitiveType": 2
+                  }
+                },
+                {
+                  "name": "mean texture",
+                  "columnType": {
+                    "nullable": false,
+                    "primitiveType": 2
+                  }
+                },
+                {
+                  "name": "mean perimeter",
+                  "columnType": {
+                    "nullable": false,
+                    "primitiveType": 2
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "index": 0,
+      "nodeName": "party_a"
+    },
+    {
+      "computeNodeType": "BRANCH",
+      "config": {
+        "config": {
+          "validation": {
+            "tableSchema": {
+              "namedColumns": [
+                {
+                  "name": "id",
+                  "columnType": {
+                    "nullable": false,
+                    "primitiveType": 0
+                  }
+                },
+                {
+                  "name": "y",
+                  "columnType": {
+                    "nullable": false,
+                    "primitiveType": 2
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "index": 1,
+      "nodeName": "party_b"
+    }
+  ],
+  "config": {
+    "showOrganizationLogo": false
+  },
+  "dataOrder": [
+    "party_a",
+    "party_b"
+  ],
+  "description": null,
+  "name": "dsf",
+  "ownerEmail": "user@advertiser.com",
+  "userPermissions": [
+    {
+      "email": "alexandros.metsai@ringier.ch",
+      "permissions": [
+        {
+          "config": {
+            "nodeType": "table",
+            "computeNodeName": "party_a"
+          },
+          "permissionType": "LEAF_CRUD_PERMISSION"
+        },
+        {
+          "config": {
+            "nodeType": "table",
+            "computeNodeName": "party_b"
+          },
+          "permissionType": "LEAF_CRUD_PERMISSION"
+        },
+        {
+          "config": {
+            "nodeType": "query",
+            "computeNodeName": "autosk"
+          },
+          "permissionType": "EXECUTE_COMPUTE_PERMISSION"
+        }
+      ]
+    }
+  ]
+}
