@@ -1,9 +1,12 @@
+import datetime
+
 from decentriq_deployment.decentriq_deployment import DecentriqDeployment
 
 
-class PartyB(DecentriqDeployment):
+class PartyA(DecentriqDeployment):
     """
-    Party B will be responsible only for uploading the dataset labels.
+    Party A will be responsible for publishing the DCR, defining the python computation and
+    uploading the dataset features.
     """
     def __init__(
                  self,
@@ -21,26 +24,23 @@ class PartyB(DecentriqDeployment):
                          schema2
                         )
 
-    def party_b_requisitions(self, data_name, data_filename, dcr_id):
-        self.python_dcr_id = dcr_id
+    def party_a_requisitions(self, data_name, data_filename):
         self.initialize_session(self.credentials_file)
+        self.publish_data_clean_room()
         self.upload_data(data_name, data_filename)
 
 
 if __name__ == "__main__":
     python_computation_filename = "examples/breast_cancer/training_script_for_decentriq.py"
-    handler = PartyB(
+    handler = PartyA(
                      credentials_file="credentials",
-                     python_computation_filename=None,
-                     data_clean_room_name=None
+                     python_computation_filename=python_computation_filename,
+                     data_clean_room_name=f"ExampleBreastCancer_{datetime.date.today()}"
                     )
 
-    # Read DCR ID temp file.
-    with open("tmp_dcr_id", "r") as file:
-        dcr_id = file.read().rstrip()
+    # Upload data
+    handler.party_a_requisitions(data_name="party_a", data_filename="examples/breast_cancer/data/data_party_a.csv")
 
-    # Upload Party B data
-    handler.party_b_requisitions(data_name="party_b",
-                                 data_filename="examples/breast_cancer/data/data_party_b.csv",
-                                 dcr_id=dcr_id
-                                 )
+    # Save DCR ID to a temp file for Party B to load from (and also to load when executing computations).
+    with open("tmp_dcr_id", "w") as file:
+        file.write(handler.python_dcr_id)

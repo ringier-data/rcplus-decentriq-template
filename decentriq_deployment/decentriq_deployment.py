@@ -155,4 +155,3 @@ class DecentriqDeployment:
         raw_result = self.session.run_computation_and_get_results(self.python_dcr_id, "training_node")
         zip_result = dqc.read_result_as_zipfile(raw_result)
         zip_result.extractall(extraction_folder)
-        zip_result.extractall(".")

@@ -19,13 +19,12 @@ The scope is the quick setup and publishing of Data Clean Rooms (DCRs), the data
 - PartyA executes the computation and gets the trained model
 
 To execute:
-1. run `train_in_dcr_party_a_workflow.py` and leave the script running
+1. run `train_in_dcr_party_a_workflow_1_upload.py`
 1. run `train_in_dcr_party_b_workflow.py`
-1. press `enter` in the first script
+1. run `train_in_dcr_party_a_workflow_2_execute.py`
+
 
 Credentials (email and API token) must be stored in `credentials` file in repo root.
-
-TODO: We can avoid the above quick-and-dirty process by creating a third script decicated to execution of the computation (if not deemed overkill).
 
 
 ## Questions and open issues

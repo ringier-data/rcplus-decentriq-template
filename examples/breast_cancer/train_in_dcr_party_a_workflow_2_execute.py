@@ -1,3 +1,4 @@
+import os
 import datetime
 
 from decentriq_deployment.decentriq_deployment import DecentriqDeployment
@@ -37,13 +38,13 @@ if __name__ == "__main__":
                      python_computation_filename=python_computation_filename,
                      data_clean_room_name=f"ExampleBreastCancer_{datetime.date.today()}"
                     )
-    handler.party_a_requisitions(data_name="party_a", data_filename="examples/breast_cancer/data/data_party_a.csv")
 
-    # Save DCR ID to temp file for Party B to load from.
-    with open("tmp_dcr_id", "w") as file:
-        file.write(handler.python_dcr_id)
+    # Read DCR ID temp file.
+    with open("tmp_dcr_id", "r") as file:
+        dcr_id = file.read().rstrip()
 
-    # TODO: auto-check if party B has uploaded data or do the computation in another file (overkill for showcase?)
-    input("Press ENTER when party B data are uploaded.")
-
+    # Execute the python computation in the DCR.
+    handler.python_dcr_id = dcr_id
+    handler.initialize_session(handler.credentials_file)
     handler.execute_computations(extraction_folder="examples/breast_cancer")
+    os.remove("tmp_dcr_id")
