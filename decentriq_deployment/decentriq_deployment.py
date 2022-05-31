@@ -14,12 +14,22 @@ class DecentriqDeployment:
                  schema2=None
                 ):
         """"
-        TODO: Deprecate hardcoded schemas.
-        TODO: Abstract for any number of schemas?
+        TODO: Is it necessary to abstract for any number of schemas?
         """
         self.credentials_file = credentials_file
         self.data_clean_room_name = data_clean_room_name
         self.python_computation_filename = python_computation_filename
+        self.schema1 = self.create_schema(schema1)
+        self.schema2 = self.create_schema(schema2)
+
+    def create_schema(self, schema):
+        """Convert schema to the format required by Decentriq."""
+        if schema is None:
+            return None
+        mapping = {"int": dqsql.PrimitiveType.INT64,
+                   "float": dqsql.PrimitiveType.FLOAT64
+                   }
+        return [(x[0], mapping[x[1]], False) for x in schema]
 
     def initialize_session(self, credentials_file="credentials"):
         # Get credentials from file
@@ -41,7 +51,7 @@ class DecentriqDeployment:
     def publish_data_clean_room(self):
         """
         NOTE: With Tabular data (which for now are our only choice), we need to know the columns
-              for all parties at DCR publish time. For the types, we can assume FLOAT64.
+              for all parties at DCR publish time. We assume INT64 and FLOAT64 for now.
         """
         python_builder = dq.DataRoomBuilder(
             self.data_clean_room_name,
@@ -51,12 +61,7 @@ class DecentriqDeployment:
         # Create a data node for each party.
         data_node_builder1 = dqsql.TabularDataNodeBuilder(
             "party_a",
-            schema=[
-                ("id", dqsql.PrimitiveType.INT64, False),
-                ("mean radius", dqsql.PrimitiveType.FLOAT64, False),
-                ("mean texture", dqsql.PrimitiveType.FLOAT64, False),
-                ("mean perimeter", dqsql.PrimitiveType.FLOAT64, False)
-            ]
+            schema=self.schema1
         )
         data_node_builder1.add_to_builder(
             python_builder,
@@ -65,10 +70,7 @@ class DecentriqDeployment:
         )
         data_node_builder2 = dqsql.TabularDataNodeBuilder(
             "party_b",
-            schema=[
-                ("id", dqsql.PrimitiveType.INT64, False),
-                ("y", dqsql.PrimitiveType.FLOAT64, False)
-            ]
+            schema=self.schema2
         )
         data_node_builder2.add_to_builder(
             python_builder,
@@ -98,7 +100,7 @@ class DecentriqDeployment:
 
         # Add executtion and retrival permissions.
         python_builder.add_user_permission(
-            email="alexandros.metsai@ringier.ch",
+            email=self.user_email,
             authentication_method=self.client.platform.decentriq_pki_authentication,
             permissions=[
                 # NOTE: Q: no permissions  needed for tabular datasets?

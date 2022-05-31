@@ -34,7 +34,9 @@ if __name__ == "__main__":
     x_train, x_test, y_train, y_test = get_data()
 
     preds = model.predict(x_test[['mean radius', 'mean texture', 'mean perimeter']])
+    print("\nScores for the downloaded model:")
     print_metrics(preds, y_test)
 
     rnd_pred = np.random.randint(0, 2, len(y_test))
+    print("\nScores for random prediction:")
     print_metrics(rnd_pred, y_test)
