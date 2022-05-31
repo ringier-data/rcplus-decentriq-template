@@ -21,17 +21,6 @@ class DecentriqDeployment:
         self.data_clean_room_name = data_clean_room_name
         self.python_computation_filename = python_computation_filename
 
-    def deploy_workflow(self):
-        """
-        Handle all stages from the parent for testing purposes.
-        TODO: Not meanted to be run by the class' children; remove in future.
-        """
-        self.initialize_session(self.credentials_file)
-        self.publish_data_clean_room()
-        self.upload_data(data_name="party_a", data_filename="examples/breast_cancer/data/data_party_a.csv")
-        self.upload_data(data_name="party_b", data_filename="examples/breast_cancer/data/data_party_b.csv")
-        self.execute_computations()
-
     def initialize_session(self, credentials_file="credentials"):
         # Get credentials from file
         with open(credentials_file, "r") as file:
