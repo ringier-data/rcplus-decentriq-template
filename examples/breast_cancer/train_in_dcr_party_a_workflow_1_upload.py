@@ -31,11 +31,23 @@ class PartyA(DecentriqDeployment):
 
 
 if __name__ == "__main__":
+    schema1 = [
+                ("id", "int"),
+                ("mean radius", "float"),
+                ("mean texture", "float"),
+                ("mean perimeter", "float")
+            ]
+    schema2 = [
+                ("id", "int"),
+                ("y",  "float")
+            ]
     python_computation_filename = "examples/breast_cancer/training_script_for_decentriq.py"
     handler = PartyA(
                      credentials_file="credentials",
                      python_computation_filename=python_computation_filename,
-                     data_clean_room_name=f"ExampleBreastCancer_{datetime.date.today()}"
+                     data_clean_room_name=f"ExampleBreastCancer_{datetime.date.today()}",
+                     schema1=schema1,
+                     schema2=schema2
                     )
 
     # Upload data
