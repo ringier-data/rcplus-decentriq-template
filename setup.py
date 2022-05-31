@@ -5,7 +5,8 @@ requirements = [
     "decentriq-platform==0.9.0rc1",
     "scikit-learn",
     "pandas==1.3.5",
-    "auto-sklearn==0.14.7"
+    "auto-sklearn==0.14.7",
+    "flake8"
 ]
 
 
