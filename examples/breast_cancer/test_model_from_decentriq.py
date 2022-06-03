@@ -29,7 +29,7 @@ def print_metrics(preds, y):
 
 if __name__ == "__main__":
     with open("examples/breast_cancer/model.pkl", "rb") as file:  # TODO: add a parameterized model name
-        model = pickle.load(file)
+        model = pickle.load(file).best_estimator_
 
     x_train, x_test, y_train, y_test = get_data()
 
