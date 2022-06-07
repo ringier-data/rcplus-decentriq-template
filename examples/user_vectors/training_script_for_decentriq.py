@@ -26,25 +26,25 @@ def get_best_svm_model_DCR(data_party_a, data_party_b):
     For now getting the inner join of the two sets seems to be enough.
     """
     combined_data = pd.merge(data_party_a, data_party_b, left_index=True, right_index=True)
-    x = combined_data.drop('target', axis=1)
-    y = combined_data['target']
+    # HACK: column names are not passed but we know that 'target' is the last column
+    # x = combined_data.drop('target', axis=1)
+    # y = combined_data['target']
+    x = combined_data.iloc[:, :-1]
+    y = combined_data.iloc[:, -1:]
     return get_best_svm_model(x, y)
 
 
 if __name__ == "__main__":
     try:
         # NOTE: column names are read from the csv
-        data_party_a = pd.read_csv("/input/party_a/dataset.csv")
-        data_party_b = pd.read_csv("/input/party_b/dataset.csv")
+        data_party_a = pd.read_csv("/input/party_a/dataset.csv", index_col=0)
+        data_party_b = pd.read_csv("/input/party_b/dataset.csv", index_col=0)
     except pd.errors.EmptyDataError as err:
         # Handle expected error during Decentriq computational tests.
         if str(err) == 'No columns to parse from file':
             print('validation passed')
         else:
             raise Exception(err)
-
-    data_party_a.set_index("user_id", inplace=True)
-    data_party_b.set_index("user_id", inplace=True)
 
     model = get_best_svm_model_DCR(data_party_a, data_party_b)
 
