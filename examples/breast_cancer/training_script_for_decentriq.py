@@ -17,7 +17,7 @@ def get_best_svm_model(x, y):
             print('validation passed')
         else:
             raise Exception(err)
-    return clf.best_estimator_
+    return clf
 
 
 def get_best_svm_model_DCR(data_party_a, data_party_b):
