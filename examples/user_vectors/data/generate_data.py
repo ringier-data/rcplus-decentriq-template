@@ -21,6 +21,7 @@ def generate_user_vectors(
         data_shape = (int(num_users * split_ratios[i]), user_vector_dims)
         generated_vectors = np.random.normal(center, size=data_shape)
         df = pd.DataFrame(generated_vectors)
+        df = df.add_prefix("feature_")  # NOTE: without a prefix, a csv sniff test by the Decentriq backend fails
         df["target"] = target_values[i]
         dfs.append(df)
     user_vectors = pd.concat(dfs)
