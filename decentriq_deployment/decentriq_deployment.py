@@ -27,7 +27,8 @@ class DecentriqDeployment:
         if schema is None:
             return None
         mapping = {"int": dqsql.PrimitiveType.INT64,
-                   "float": dqsql.PrimitiveType.FLOAT64
+                   "float": dqsql.PrimitiveType.FLOAT64,
+                   "string": dqsql.PrimitiveType.STRING
                    }
         return [(x[0], mapping[x[1]], False) for x in schema]
 
