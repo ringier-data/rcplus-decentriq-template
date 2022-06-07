@@ -32,7 +32,7 @@ def generate_user_vectors(
     return user_vectors
 
 
-if __name__ == "__main__":
+def generate_data():
     user_vectors = generate_user_vectors()
 
     # Split to party A and party B data
@@ -59,3 +59,14 @@ if __name__ == "__main__":
     party_b_data.to_csv(os.path.join(save_dir, "party_b_targets.csv"), index=False)
     party_a_hashes_df.to_csv(os.path.join(save_dir, "party_a_map.csv"), index=False)
     party_b_hashes_df.to_csv(os.path.join(save_dir, "party_b_map.csv"), index=False)
+
+    # Save schemas to csv files.
+    party_a_datatypes = ["string" if col == "user_id" else "float" for col in party_a_data.columns]
+    party_a_schema = pd.DataFrame({"col_name": party_a_data.columns, "col_datatype": party_a_datatypes})
+    party_b_schema = pd.DataFrame({"col_name": party_b_data.columns, "col_datatype": ["string"] * 2})
+    party_a_schema.to_csv(os.path.join(save_dir, "party_a_schema.csv"), index=False)
+    party_b_schema.to_csv(os.path.join(save_dir, "party_b_schema.csv"), index=False)
+
+
+if __name__ == "__main__":
+    generate_data()
