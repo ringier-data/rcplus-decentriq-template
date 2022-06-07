@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     # Split to party A and party B data
     party_a_data = user_vectors.drop("target", axis=1)
-    party_b_data = user_vectors[["email", "target"]]
+    party_b_data = user_vectors.loc[:, ["email", "target"]]
 
     # Generate pseudo internal email hashes
     party_a_hashes_df = pd.DataFrame(party_a_data["email"])
