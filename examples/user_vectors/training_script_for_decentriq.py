@@ -36,7 +36,6 @@ def get_best_svm_model_DCR(data_party_a, data_party_b):
 
 if __name__ == "__main__":
     try:
-        # NOTE: column names are read from the csv
         data_party_a = pd.read_csv("/input/party_a/dataset.csv", index_col=0)
         data_party_b = pd.read_csv("/input/party_b/dataset.csv", index_col=0)
     except pd.errors.EmptyDataError as err:
