@@ -26,10 +26,18 @@ To execute:
 
 Credentials (email and API token) must be stored in `credentials` file in repo root.
 
+### Train on breast cancer scikit-learn dataset
+
+- Vector data is generated as sampling from two normal distributions that correspond to two user classes (low, high) through the `generate_data.py` script.
+- Dummy email addresses are assigned to users, as well as a mapping/hash which imitates the internal hashing of email address in databases.
+- We save the user vectors with the hashed emails (party A data), the user class with the hashed emails (party B data), the email to hash mapping for each party, and the schema of each party's dataset.
+
+The flow then can be run similarly to the above example. The internal hash of each party will be matched to the appropriate email address, which will then be encrypted with a common hashing function for both parties and will then be uploaded to the DCR. In a real world scenario, the mapping table and the subsequent hashing function must be kept private.
 
 ## Questions and open issues
 **Q:** How are packages installed in decentriq? Do we have restrictions regarding sklearn version, etc.? \
 **A:** Decentriq data clean rooms do not allow installing packages, but instead come with some pre-installed libraries.
 
 
-**Issue:** There are some issues regarding the usage of abstract files (instread of tabular data) in the DCRs. Specifically, it is only possible to use one (and only one) file that is unstructured. Using more than one is for the moment disabled, as some edge cases were found that are not easy to control in confidential computing yet. Decentriq is currently enabling them. Suggested reasons for using tabular rather than abstract files (when possible) is that they are easier to control, there is data validation in place for them and are optimized in the read-write process.
+**Issue:** There are some issues regarding the usage of abstract files (instread of tabular data) in the DCRs. ~~Specifically, it is only possible to use one (and only one) file that is unstructured. Using more than one is for the moment disabled, as some edge cases were found that are not easy to control in confidential computing yet. Decentriq is currently enabling them. Suggested reasons for using tabular rather than abstract files (when possible) is that they are easier to control, there is data validation in place for them and are optimized in the read-write process.~~
+Any number of abstract files is now supported; this can be tested in some example.
