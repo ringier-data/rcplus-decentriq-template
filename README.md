@@ -26,6 +26,13 @@ To execute:
 
 Credentials (email and API token) must be stored in `credentials` file in repo root.
 
+### Train on breast cancer scikit-learn dataset
+
+- Vector data is generated as sampling from two normal distributions that correspond to two user classes (low, high) through the `generate_data.py` script.
+- Dummy email addresses are assigned to users, as well as a mapping/hash which imitates the internal hashing of email address in databases.
+- We save the user vectors with the hashed emails (party A data), the user class with the hashed emails (party B data), the email to hash mapping for each party, and the schema of each party's dataset.
+
+The flow then can be run similarly to the above example. The internal hash of each party will be matched to the appropriate email address, which will then be encrypted with a common hashing function for both parties and will then be uploaded to the DCR. In a real world scenario, the mapping table and the subsequent hashing function must be kept private.
 
 ## Questions and open issues
 **Q:** How are packages installed in decentriq? Do we have restrictions regarding sklearn version, etc.? \
