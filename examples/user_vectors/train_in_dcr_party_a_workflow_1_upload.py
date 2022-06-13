@@ -28,7 +28,7 @@ class PartyA(DecentriqDeployment):
 
     def party_a_requisitions(self, data_name, data_filename):
         self.initialize_session(self.credentials_file)
-        self.publish_data_clean_room()
+        self.publish_data_clean_room(second_party_user_email=self.user_email)  # NOTE: same as party A for demo purposes
         self.upload_data(data_name, data_filename)
 
 

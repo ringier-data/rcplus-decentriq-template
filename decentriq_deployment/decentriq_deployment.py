@@ -49,10 +49,10 @@ class DecentriqDeployment:
         self.auth = self.client.platform.create_auth_using_decentriq_pki()
         self.session = self.client.create_session(self.auth, self.specs)
 
-    def publish_data_clean_room(self):
+    def publish_data_clean_room(self, second_party_user_email):
         """
         NOTE: With Tabular data (which for now are our only choice), we need to know the columns
-              for all parties at DCR publish time. We assume INT64 and FLOAT64 for now.
+              for all parties at DCR publish time.
         """
         python_builder = dq.DataRoomBuilder(
             self.data_clean_room_name,
@@ -76,7 +76,7 @@ class DecentriqDeployment:
         data_node_builder2.add_to_builder(
             python_builder,
             authentication=self.client.platform.decentriq_pki_authentication,
-            users=[self.user_email]  # TODO: this is the place to add permissions for Party B user
+            users=[second_party_user_email]  # NOTE: grant permissions to Party B user
         )
 
         # Create the python computation node.
@@ -99,14 +99,12 @@ class DecentriqDeployment:
         )
         python_builder.add_compute_node(training_node)
 
-        # Add executtion and retrival permissions.
+        # Add executtion and retrieval permissions.
         python_builder.add_user_permission(
             email=self.user_email,
             authentication_method=self.client.platform.decentriq_pki_authentication,
             permissions=[
-                # NOTE: Q: no permissions  needed for tabular datasets?
-                #       A: They are added from "add_to_builder", though that seems a bit inconcise imo.
-                #          Maybe it has something to do with the implementation details.
+                # NOTE: Permissions for tabular datasets are added from "add_to_builder".
                 # dq.Permissions.leaf_crud("party_a"),
                 # dq.Permissions.leaf_crud("party_b"),
                 dq.Permissions.execute_compute("training_node"),
