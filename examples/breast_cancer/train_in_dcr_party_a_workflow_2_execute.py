@@ -25,11 +25,6 @@ class PartyA(DecentriqDeployment):
                          schema2
                         )
 
-    def party_a_requisitions(self, data_name, data_filename):
-        self.initialize_session(self.credentials_file)
-        self.publish_data_clean_room()
-        self.upload_data(data_name, data_filename)
-
 
 if __name__ == "__main__":
     python_computation_filename = "examples/breast_cancer/training_script_for_decentriq.py"
