@@ -37,9 +37,12 @@ if __name__ == "__main__":
     # Read DCR ID temp file.
     with open("tmp_dcr_id", "r") as file:
         dcr_id = file.read().rstrip()
+    # Read Training Node ID temp file.
+    with open("tmp_training_node_id", "r") as file:
+        node_id = file.read().rstrip()
 
     # Execute the python computation in the DCR.
     handler.python_dcr_id = dcr_id
     handler.initialize_session(handler.credentials_file)
-    handler.execute_computations(extraction_folder="examples/user_vectors")
+    handler.execute_computations(training_node_id=node_id, extraction_folder="examples/user_vectors")
     os.remove("tmp_dcr_id")

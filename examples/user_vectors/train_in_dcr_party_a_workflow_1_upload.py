@@ -97,3 +97,6 @@ if __name__ == "__main__":
     # Save DCR ID to a temp file for Party B to load from (and also to load when executing computations).
     with open("tmp_dcr_id", "w") as file:
         file.write(handler.python_dcr_id)
+    # Save Training Node ID for executing computations at a latter stage.
+    with open("tmp_training_node_id", "w") as file:
+        file.write(handler.training_node_id)
