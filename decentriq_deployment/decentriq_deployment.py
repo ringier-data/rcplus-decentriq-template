@@ -42,9 +42,9 @@ class DecentriqDeployment:
 
         self.client = dq.create_client(self.user_email, api_token, integrate_with_platform=True)
         self.specs = dq.enclave_specifications.versions([
-            "decentriq.driver:v2",
-            "decentriq.sql-worker:v2",
-            "decentriq.python-ml-worker:v1"
+            "decentriq.driver:v4",
+            "decentriq.sql-worker:v4",
+            "decentriq.python-ml-worker:v2"
         ])
         self.auth = self.client.platform.create_auth_using_decentriq_pki()
         self.session = self.client.create_session(self.auth, self.specs)
