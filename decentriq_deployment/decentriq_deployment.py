@@ -82,14 +82,14 @@ class DecentriqDeployment:
         # Create the python computation node.
         with open(self.python_computation_filename, "rb") as input_script:
             my_script_content_from_file = input_script.read()
-        script_node1 = dq.StaticContent("python_script", my_script_content_from_file)
-        python_builder.add_compute_node(script_node1)
+        script_node = dq.StaticContent("script_node", my_script_content_from_file)
+        script_node_id = python_builder.add_compute_node(script_node)
 
         training_node = dqc.StaticContainerCompute(
             name="training_node",
             command=["python", "/input/train_script_decentriq.py"],
             mount_points=[
-                MountPoint(path="/input/train_script_decentriq.py", dependency="python_script"),
+                MountPoint(path="/input/train_script_decentriq.py", dependency=script_node_id),
                 MountPoint(path="/input/party_a", dependency="party_a"),
                 MountPoint(path="/input/party_b", dependency="party_b")
             ],
@@ -97,7 +97,7 @@ class DecentriqDeployment:
             enclave_type="decentriq.python-ml-worker",
             include_container_logs_on_error=True
         )
-        python_builder.add_compute_node(training_node)
+        self.training_node_id = python_builder.add_compute_node(training_node)
 
         # Add executtion and retrieval permissions.
         python_builder.add_user_permission(
@@ -107,7 +107,7 @@ class DecentriqDeployment:
                 # NOTE: Permissions for tabular datasets are added from "add_to_builder".
                 # dq.Permissions.leaf_crud("party_a"),
                 # dq.Permissions.leaf_crud("party_b"),
-                dq.Permissions.execute_compute("training_node"),
+                dq.Permissions.execute_compute(self.training_node_id),
                 dq.Permissions.retrieve_published_datasets(),
                 dq.Permissions.update_data_room_status(),
                 dq.Permissions.retrieve_data_room_status(),
@@ -140,8 +140,8 @@ class DecentriqDeployment:
         # Get dataset from postgres
         self.client.get_dataset(dataset_id)
 
-    def execute_computations(self, extraction_folder="."):
+    def execute_computations(self, training_node_id, extraction_folder="."):
         """Run computation and get results."""
-        raw_result = self.session.run_computation_and_get_results(self.python_dcr_id, "training_node")
+        raw_result = self.session.run_computation_and_get_results(self.python_dcr_id, training_node_id)
         zip_result = dqc.read_result_as_zipfile(raw_result)
         zip_result.extractall(extraction_folder)
