@@ -19,6 +19,6 @@ setup(
     author="Ringier AG",
     author_email="info@ringier.ch",
     packages=find_packages(exclude=("tests")),
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     install_requires=requirements,
 )
