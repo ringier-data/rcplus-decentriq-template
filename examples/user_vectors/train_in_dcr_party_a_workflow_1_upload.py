@@ -73,12 +73,14 @@ if __name__ == "__main__":
     schema2 = read_schema("examples/user_vectors/data/party_b_schema.csv")
 
     # Apply hashing function before uploading to DCR.
+    print("Hashing the user emails...")
     create_hashed_dataset(
                           dataset_filename="examples/user_vectors/data/party_a_user_vectors.csv",
                           email_mapping_table="examples/user_vectors/data/party_a_map.csv",
                           hashing_function=lambda x: hashlib.sha224(x.encode()).hexdigest(),
                           output_filename="examples/user_vectors/data/party_a_user_vectors_hashed.csv"
                          )
+    print("Hashing finished.")
 
     python_computation_filename = "examples/user_vectors/training_script_for_decentriq.py"
     handler = PartyA(

@@ -46,3 +46,4 @@ if __name__ == "__main__":
     handler.initialize_session(handler.credentials_file)
     handler.execute_computations(training_node_id=node_id, extraction_folder="examples/user_vectors")
     os.remove("tmp_dcr_id")
+    os.remove("tmp_training_node_id")
