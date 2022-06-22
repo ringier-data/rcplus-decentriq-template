@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 requirements = [
-    "decentriq-platform==0.9.0rc1",
+    "decentriq-platform==0.11",
     "scikit-learn",
     "pandas==1.3.5",
     "auto-sklearn==0.14.7",
@@ -19,6 +19,6 @@ setup(
     author="Ringier AG",
     author_email="info@ringier.ch",
     packages=find_packages(exclude=("tests")),
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     install_requires=requirements,
 )

@@ -14,6 +14,7 @@ def generate_user_vectors(
     """"
     Generate user vectors from normal distributions with different centers,
     and assign a target value to each group.
+    TODO: add tqdm, it can get pretty slow for millions of users (might also be need for the other steps)
     """
     # Generate data and assign targets
     dfs = []
@@ -33,8 +34,8 @@ def generate_user_vectors(
     return user_vectors
 
 
-def generate_data():
-    user_vectors = generate_user_vectors()
+def generate_data(num_users):
+    user_vectors = generate_user_vectors(num_users)
 
     # Split to party A and party B data
     party_a_data = user_vectors.drop("target", axis=1)
@@ -70,4 +71,4 @@ def generate_data():
 
 
 if __name__ == "__main__":
-    generate_data()
+    generate_data(num_users=10_000)

@@ -73,12 +73,14 @@ if __name__ == "__main__":
     schema2 = read_schema("examples/user_vectors/data/party_b_schema.csv")
 
     # Apply hashing function before uploading to DCR.
+    print("Hashing the user emails...")
     create_hashed_dataset(
                           dataset_filename="examples/user_vectors/data/party_a_user_vectors.csv",
                           email_mapping_table="examples/user_vectors/data/party_a_map.csv",
                           hashing_function=lambda x: hashlib.sha224(x.encode()).hexdigest(),
                           output_filename="examples/user_vectors/data/party_a_user_vectors_hashed.csv"
                          )
+    print("Hashing finished.")
 
     python_computation_filename = "examples/user_vectors/training_script_for_decentriq.py"
     handler = PartyA(
@@ -97,3 +99,6 @@ if __name__ == "__main__":
     # Save DCR ID to a temp file for Party B to load from (and also to load when executing computations).
     with open("tmp_dcr_id", "w") as file:
         file.write(handler.python_dcr_id)
+    # Save Training Node ID for executing computations at a latter stage.
+    with open("tmp_training_node_id", "w") as file:
+        file.write(handler.training_node_id)

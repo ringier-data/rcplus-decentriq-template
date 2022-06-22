@@ -34,12 +34,14 @@ class PartyB(DecentriqDeployment):
 if __name__ == "__main__":
 
     # Apply hashing function before uploading to DCR.
+    print("Hashing the user emails...")
     create_hashed_dataset(
                           dataset_filename="examples/user_vectors/data/party_b_targets.csv",
                           email_mapping_table="examples/user_vectors/data/party_b_map.csv",
                           hashing_function=lambda x: hashlib.sha224(x.encode()).hexdigest(),
                           output_filename="examples/user_vectors/data/party_b_targets_hashed.csv"
                          )
+    print("Hashing finished.")
 
     handler = PartyB(
                      credentials_file="credentials",
