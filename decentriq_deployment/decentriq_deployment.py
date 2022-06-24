@@ -1,7 +1,9 @@
 import decentriq_platform as dq
 import decentriq_platform.sql as dqsql
 import decentriq_platform.container as dqc
+
 from decentriq_platform.container.proto import MountPoint
+from decentriq_platform.types import JobId
 
 
 class DecentriqDeployment:
@@ -142,6 +144,18 @@ class DecentriqDeployment:
 
     def execute_computations(self, training_node_id, extraction_folder="."):
         """Run computation and get results."""
-        raw_result = self.session.run_computation_and_get_results(self.python_dcr_id, training_node_id)
+        job_id = self.session.run_computation(self.python_dcr_id, training_node_id)
+        print(f"Job ID for the computation {job_id.id, job_id.compute_node_id}")  # TODO: should we temporary store ids?
+
+        raw_result = self.session.get_computation_result(job_id)
+        zip_result = dqc.read_result_as_zipfile(raw_result)
+        zip_result.extractall(extraction_folder)
+
+    def get_results_from_job_id(self, job_id, training_node_id, extraction_folder="."):
+        """
+        Get results when the connection with the DCR is interupted in long-lasting computations.
+        """
+        job_id = JobId(job_id=job_id, compute_node_id=training_node_id)
+        raw_result = self.session.get_computation_result(job_id)
         zip_result = dqc.read_result_as_zipfile(raw_result)
         zip_result.extractall(extraction_folder)
