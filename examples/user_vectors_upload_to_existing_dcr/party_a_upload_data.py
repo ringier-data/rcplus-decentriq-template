@@ -55,10 +55,14 @@ if __name__ == "__main__":
     # Apply hashing function before uploading to DCR.
     print("Hashing the user emails...")
     create_hashed_dataset(
-                          dataset_filename="examples/user_vectors_upload_to_existing_dcr/data/party_a_user_vectors.csv",
+                          dataset_filename=("examples/user_vectors_upload_to_"
+                                            "existing_dcr/data/party_a_user_vectors.csv"
+                                            ),
                           email_mapping_table="examples/user_vectors_upload_to_existing_dcr/data/party_a_map.csv",
                           hashing_function=lambda x: hashlib.sha224(x.encode()).hexdigest(),
-                          output_filename="examples/user_vectors_upload_to_existing_dcr/data/party_a_user_vectors_hashed.csv"
+                          output_filename=("examples/user_vectors_upload_to_existing_"
+                                           "dcr/data/party_a_user_vectors_hashed.csv"
+                                           )
                          )
     print("Hashing finished.")
 
@@ -72,6 +76,8 @@ if __name__ == "__main__":
         dcr_id = file.read().rstrip()
 
     handler.party_a_requisitions(data_name="party_a",
-                                 data_filename="examples/user_vectors_upload_to_existing_dcr/data/party_a_user_vectors_hashed.csv",
+                                 data_filename=("examples/user_vectors_upload_to_existing_"
+                                                "dcr/data/party_a_user_vectors_hashed.csv"
+                                                ),
                                  dcr_id=dcr_id
                                  )
