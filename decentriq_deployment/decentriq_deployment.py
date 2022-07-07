@@ -1,3 +1,4 @@
+import io
 import decentriq_platform as dq
 import decentriq_platform.sql as dqsql
 import decentriq_platform.container as dqc
@@ -53,8 +54,7 @@ class DecentriqDeployment:
 
     def publish_data_clean_room(self, second_party_user_email):
         """
-        NOTE: With Tabular data (which for now are our only choice), we need to know the columns
-              for all parties at DCR publish time.
+        NOTE: With Tabular data, we need to know the columns for all parties at DCR publish time.
         """
         python_builder = dq.DataRoomBuilder(
             self.data_clean_room_name,
@@ -124,7 +124,7 @@ class DecentriqDeployment:
         print("DCR is successfully published. DCR ID:", self.python_dcr_id)
 
     def upload_data(self, data_name, data_filename):
-        """"Upload the data for a single dataset."""
+        """"Upload the contents of a single tabular dataset."""
         key = dq.Key()
 
         input_data = dqsql.read_input_csv_file(data_filename, has_header=True, delimiter=",")
@@ -141,6 +141,25 @@ class DecentriqDeployment:
 
         # Get dataset from postgres
         self.client.get_dataset(dataset_id)
+
+    def upload_abstract_data(self, data_node_id, local_data_filename, filename_in_dcr):
+        """"
+        Upload an abstract file to the DCR.
+
+        Args:
+            data_node_id: If the DCR has been published through the Web API, this can be obtained through "Expert View".
+                          The name seems to follow the pattern "@table/$(DATA_NAME)/dataset".
+            local_data_filename: Path of file that is to be uploaded.
+            filename_in_dcr: The desired filename for the uploaded file to possess in the DCR.
+        Returns:
+            None
+        """
+        key = dq.Key()
+        with open(local_data_filename, "r") as file:
+            input_data = file.read()
+        input_data = io.BytesIO(input_data.encode())
+        dataset_id = self.client.upload_dataset(input_data, key, filename_in_dcr)
+        self.session.publish_dataset(self.python_dcr_id, dataset_id, data_node_id, key)
 
     def execute_computations(self, training_node_id, extraction_folder="."):
         """Run computation and get results."""
